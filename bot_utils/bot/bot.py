@@ -1,5 +1,5 @@
 from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
+from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
 from .commands import *
 
 
@@ -16,6 +16,9 @@ def setup(token):
 
     print('[] Adding commands to the bot...')
     # Adding commands
+    echo_handler = MessageHandler(filters.TEXT & (~filters.COMMAND), echo)
+    app.add_handler(echo_handler)
+
     start_handler = CommandHandler('start', start)
     app.add_handler(start_handler)
 
