@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="misc/img/logo.png" width="128">
+  <img src="misc/img/logo.png" width="200">
   <h1 align="center">sternenkarte</h1>
   <p align="center">Bot de Telegram para consultar información sobre estrellas, constelaciones y relaciones de recurrencia</p>
 </div>
