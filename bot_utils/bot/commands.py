@@ -46,3 +46,32 @@ To get started, type the /help command.
     '''
 
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
+
+
+async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    '''
+    Help menu
+    '''
+
+# Work on this
+    response ='''
+    In order to get use my capacities, you should know them first:
+
+⚠️ W.I.P (stars and constellations)
+
+And last, but not least:
+
+🔁 Solve recurrence relation (especially, inhomogeneous)
+    /rsolve
+    '''
+
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
+
+
+# For recurrence relations solver (conversation)
+async def function(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    '''
+    Input the recurrence relation from the user
+    '''
