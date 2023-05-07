@@ -2,7 +2,6 @@ from config import get_token
 from bot_utils.bot import bot
 
 
-
 if __name__ == '__main__':
 
     # Get Telegram bot TOKEN
