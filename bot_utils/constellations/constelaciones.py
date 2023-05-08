@@ -1,5 +1,4 @@
 import re
-import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objs as go
 import os
@@ -72,6 +71,8 @@ class Constelacion:
 class StarNotFound(Exception):
     
     def __init__(self):
+        
+        #create custom error message
         pass
 
     def __str__(self):
@@ -82,7 +83,7 @@ def inicializar_estrellas() -> tuple[list[Estrella], dict[str, tuple[str, str]]]
     estrellas = []
     referencias = {}
         
-    with open("stars.txt", "r") as f: 
+    with open("bot_utils/constellations/data/stars.txt", "r") as f: 
         
         contenido = f.readlines()
         
@@ -138,7 +139,7 @@ def inicializar_constelaciones(estrellas: list) -> list[Constelacion]:
     
     for archivo in archivos: 
         
-        with open(archivo, "r") as f: 
+        with open(f"bot_utils/constellations/data/{archivo}", "r") as f: 
             
             contenido = f.readlines()
 
@@ -165,17 +166,15 @@ def inicializar_constelaciones(estrellas: list) -> list[Constelacion]:
 
 def graficar(referencias: dict, constelaciones: list = None, imagen: str = "") -> bytes:
     
-    if os.path.exists(f"/images/{imagen}"):
+    if os.path.exists(f"bot_utils/constellations/images/{imagen}"):
 
         print(f"La imagen {imagen} ya existe")
 
-        with open(f"/images/{imagen}", "rb") as f:
+        with open(f"bot_utils/constellations/images/{imagen}", "rb") as f:
             
             return f.read()
 
     fig = go.Figure()
-
-    #marker=dict(size=10, line=dict(width=1, color='white'))
 
     for estrella, coords in referencias.items():
         
@@ -202,8 +201,6 @@ def graficar(referencias: dict, constelaciones: list = None, imagen: str = "") -
                     
                     lineas_x.extend([coords_estrella[0], coords_conexion[0], None])
                     lineas_y.extend([coords_estrella[1], coords_conexion[1], None])
-                    
-            #color = '#'+str(hex(randint(0, 16777215)))[2:].zfill(6) # Genera un color aleatorio en formato hexadecimal
             
             fig.add_trace(go.Scatter(x=lineas_x, y=lineas_y, mode='lines', showlegend=True, legendgroup=constelacion.nombre, line=dict(color=colores[constelacion.nombre]), name='', hoverinfo='none'))
             
