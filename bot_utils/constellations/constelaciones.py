@@ -2,6 +2,8 @@ import re
 import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objs as go
+import os
+from plotly.io import to_image
 
 class Estrella:
     
@@ -114,7 +116,7 @@ def inicializar_estrellas() -> tuple[list[Estrella], dict[str, tuple[str, str]]]
             
             estrella = Estrella(coord_x, coord_y, id_, brillo, hid, nombre)
             estrellas.append(estrella)
-            referencias[id_] = (coord_x, coord_y)
+            referencias[id_] = (coord_x, coord_y, brillo)
     
     return estrellas, referencias
 
@@ -161,21 +163,34 @@ def inicializar_constelaciones(estrellas: list) -> list[Constelacion]:
     
     return constelaciones
 
-def graficar(referencias: dict, constelaciones: list = None) -> go.Figure:
+def graficar(referencias: dict, constelaciones: list = None, imagen: str = "") -> bytes:
     
+    if os.path.exists(f"/images/{imagen}"):
+
+        print(f"La imagen {imagen} ya existe")
+
+        with open(f"/images/{imagen}", "rb") as f:
+            
+            return f.read()
+
     fig = go.Figure()
 
     #marker=dict(size=10, line=dict(width=1, color='white'))
 
     for estrella, coords in referencias.items():
         
-        fig.add_trace(go.Scatter(x=[coords[0]], y=[coords[1]], mode='markers', name=str(estrella)))
+        fig.add_trace(go.Scatter(x=[coords[0]], y=[coords[1]], mode='markers', name=str(estrella), opacity=abs(coords[2]/10.5), showlegend=False))
 
     # agregar lineas
     
     if constelaciones is not None:
+
+        colores = {"Boyero": '#ef476f', "Casiopea": '#ffd166', "Cazo":'#19D3F3', "Cygnet": '#06d6a0', "Geminis": '#ece4b7', "Hydra": '#F0544F', "OsaMayor":'#01FF70', "OsaMenor": '#F012BE'}
         
         for constelacion in constelaciones:
+            
+            lineas_x = []
+            lineas_y = []
             
             for estrella, conexiones in constelacion.aristas.items():
                 
@@ -185,7 +200,14 @@ def graficar(referencias: dict, constelaciones: list = None) -> go.Figure:
                     
                     coords_conexion = referencias[conexion]
                     
-                    fig.add_trace(go.Scatter(x=[coords_estrella[0], coords_conexion[0]], y=[coords_estrella[1], coords_conexion[1]], mode='lines'))
+                    lineas_x.extend([coords_estrella[0], coords_conexion[0], None])
+                    lineas_y.extend([coords_estrella[1], coords_conexion[1], None])
+                    
+            #color = '#'+str(hex(randint(0, 16777215)))[2:].zfill(6) # Genera un color aleatorio en formato hexadecimal
+            
+            fig.add_trace(go.Scatter(x=lineas_x, y=lineas_y, mode='lines', showlegend=True, legendgroup=constelacion.nombre, line=dict(color=colores[constelacion.nombre]), name='', hoverinfo='none'))
+            
+            fig.add_trace(go.Scatter(x=[0], y=[0], mode='none', name=constelacion.nombre, showlegend=True, legendgroup=constelacion.nombre, line=dict(color=colores[constelacion.nombre])))
 
 
     # establecer el título de la figura y los ejes
@@ -216,4 +238,5 @@ def graficar(referencias: dict, constelaciones: list = None) -> go.Figure:
             )
         )
     )
-    fig.show()
+
+    return to_image(fig, format='png', width=800, height=800, scale=2)
