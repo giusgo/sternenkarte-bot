@@ -89,6 +89,9 @@ And last, but not least:
 🔁 Solve recurrence relation (especially, inhomogeneous)
     /rsolve
 
+🌌 Get data of stars and constellations
+    /constellations
+
 ❌ You can cancel any of these commands at any time with the command /cancel
     '''
 
@@ -221,7 +224,7 @@ async def constellations(update: Update, context: ContextTypes.DEFAULT_TYPE):
     All stars and 0 for second option. (if you want another type the correspondent number)
     All stars and constellations for third option.
     
-    FOLLOWING INPUTS ARE NOT ALLOWED ❎❎
+    FOLLOWING INPUTS ARE NOT ALLOWED ❌❌
     
     All stars Boyero
     All stars 0 1 2 3 
@@ -240,6 +243,7 @@ async def get_input_values(update: Update, context: ContextTypes.DEFAULT_TYPE):
     '''
     
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+    await context.bot.send_chat_action(chat_id=update.effective_chat.id, action='typing')
     
     #efecto de escribir 
     
