@@ -1,4 +1,4 @@
-from constelaciones import inicializar_constelaciones, inicializar_estrellas, graficar
+from .constelaciones import inicializar_constelaciones, inicializar_estrellas, graficar
 import os
 
 def main(peticion: dict) -> bytes:
