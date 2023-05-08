@@ -18,6 +18,8 @@ import sympy as sp
 import requests
 import io
 from ..recurrence_relations.recurrence import *
+from ..constellations.main import *
+import re
 
 
 def render_latex(equation):
@@ -183,3 +185,100 @@ async def cancel_rsolve(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
     return ConversationHandler.END
+
+'''
+From here below, these are commands to solve constellations problems
+These are conversations to receive multiple inputs from the user
+'''
+
+CONSTELLATION = range(1)
+
+async def constellations(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    
+    response = '''
+    Welcome to constellations menu 🌌🌌💫!
+    
+    Please select an option of what you'd like to see👀:
+    
+    1. All stars ✨
+    2. All stars and one constellations ✨🌌
+    3. All stars and constellations 🌟
+    
+    Constellations list🗒️:
+    
+    0. Boyero
+    1. Casiopea
+    2. Cazo
+    3. Cygnet
+    4. Geminis
+    5. Hydra
+    6. OsaMayor
+    7. OsaMenor
+    
+    For instance type: 
+    
+    All stars for fist option.
+    All stars and 0 for second option. (if you want another type the correspondent number)
+    All stars and constellations for third option.
+    
+    FOLLOWING INPUTS ARE NOT ALLOWED ❎❎
+    
+    All stars Boyero
+    All stars 0 1 2 3 
+    '''
+    
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+    
+    return CONSTELLATION
+
+async def get_input_values(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    
+    user_input = update.message.text
+    
+    response = '''
+    Fetching data in database👀👀
+    '''
+    
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+    
+    #efecto de escribir 
+    
+    validation = r'^All stars(?:\sand\s(?:[1-7]|[0]))?$|^All stars and constellations$'
+    
+    if bool(re.match(validation, user_input.strip())):
+        
+        req_type = None 
+        constelacion = 0
+        img_name = ""
+        
+        if user_input == "All stars":
+            
+            req_type = "tde"
+        
+        elif user_input == "All stars and constellations":
+            
+            req_type = "tddc"
+        
+        else:
+            
+            req_type = "tdc"
+            constelacion = int(user_input.split(" ")[3])
+            
+        request = {"req-type": req_type, "constelacion": constelacion} 
+        
+        img = main(request)
+        
+        await context.bot.send_photo(chat_id=update.effective_chat.id, photo=img)
+    
+    else: 
+        
+        response = '''
+        An error has ocurred😥😥
+        
+        Please check for the input value.
+        '''
+        
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+
+    return ConversationHandler.END
+

@@ -1,12 +1,12 @@
 from constelaciones import inicializar_constelaciones, inicializar_estrellas, graficar
+import os
 
-def main(peticion: dict) -> None:
+def main(peticion: dict) -> bytes:
     
     estrellas, referencias = inicializar_estrellas()
     constelaciones = inicializar_constelaciones(estrellas)
     
-    if enviar_peticion(peticion, referencias, constelaciones): print("Excelente")
-    else: print("Coja juicio")
+    return enviar_peticion(peticion, referencias, constelaciones)
     
 def enviar_peticion(peticion: dict, referencias: dict, constelaciones: list) -> bool:
     
@@ -33,12 +33,10 @@ def enviar_peticion(peticion: dict, referencias: dict, constelaciones: list) -> 
         
         resultado = graficar(referencias, constelaciones, imagen)
     
-    if resultado is not None and imagen != "":
+    if resultado is not None and imagen != "" and not os.path.exists(f"bot_utils/constellations/images/{imagen}"):
 
         with open(f"bot_utils/constellations/images/{imagen}", "wb") as f:
             
             f.write(resultado)
-            
-            return True 
     
-    return False
+    return resultado

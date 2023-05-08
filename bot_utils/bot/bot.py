@@ -24,7 +24,15 @@ def setup(token):
     '''
     Stars and constellations commands
     '''
-    # Add this
+    constellations_handler = ConversationHandler(
+        entry_points=[CommandHandler("constellations", constellations)],
+        states={
+            CONSTELLATION: [MessageHandler(
+                filters.TEXT & ~filters.COMMAND, get_input_values)]
+        },
+        fallbacks=[CommandHandler('cancel', cancel_rsolve)]
+    )
+    app.add_handler(constellations_handler)
 
     '''
     Recurrence relations commands
