@@ -53,7 +53,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif msg_from_user.lower() == 'how are you?':
         response = 'Excellent!'
     else:
-        response = 'I didn\'t understand you quite well. Try a command in /help.'
+        response = 'I didn\'t understand you quite well. Verify you are not inside the context of a previous command. Try a command in /help.'
 
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
 
@@ -64,7 +64,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     '''
 
     response = '''
-    Hi! I am SternenKarte, a bot that can be used to query information about stars and constellations.
+    Hi! I am SternenKarte⭐, a bot that can be used to query information about stars and constellations.
 Also, I have the capacity to solve recurrence relations! Isn't that awesome?
 
 To get started, type the /help command.
@@ -81,10 +81,6 @@ async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Work on this
     response = '''
     In order to get use my capacities, you should know them first:
-
-⚠️ W.I.P (stars and constellations)
-
-And last, but not least:
 
 🔁 Solve recurrence relation (especially, inhomogeneous)
     /rsolve
@@ -125,20 +121,29 @@ async def get_initial_values(update: Update, context: ContextTypes.DEFAULT_TYPE)
     '''
     Initial values input
     '''
-        
-    response_1 = '''
-    You entered the following function:
-    '''
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=response_1)
 
     # Get the function from the user
-    function_from_user = update.message.text.split("=")[1]
-    context.chat_data['fn'] = function_from_user
-    parsed_function = 'f(n) =' + sp.latex(sp.parse_expr(function_from_user))
+    try:
+        response_1 = '''
+        You entered the following function:
+        '''
 
-    # Transform the parsed function to image (latex rendered)
-    img = render_latex(parsed_function)
-    await context.bot.send_photo(chat_id=update.effective_chat.id, photo=img)
+        function_from_user = update.message.text.split("=")[1]
+        context.chat_data['fn'] = function_from_user
+        parsed_function = 'f(n) =' + sp.latex(sp.parse_expr(function_from_user))
+
+        # Transform the parsed function to image (latex rendered)
+        img = render_latex(parsed_function)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=response_1)
+        await context.bot.send_photo(chat_id=update.effective_chat.id, photo=img)
+
+    except:
+        response_2 = '''
+        ❗ An error has ocurred. Please verify your input. If you want to try again write /rsolve.
+        '''
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=response_2)
+
+        return ConversationHandler.END
 
     response_2 = '''
     Now, give me the initial values like this:
@@ -159,20 +164,27 @@ async def show_rsolved(update: Update, context: ContextTypes.DEFAULT_TYPE):
     initial_conditions = update.message.text
 
     # Process the function
-    solution = solve_recurrence(function_from_user, initial_conditions)
+    try:
+        solution = solve_recurrence(function_from_user, initial_conditions)
 
-    response_1 = '''
-    🤓🧠 The non-recurring form of the function is:
-    '''
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=response_1)
+        response_1 = '''
+        🤓🧠 The non-recurring form of the function is:
+        '''
 
-    img = render_latex(solution)
-    await context.bot.send_photo(chat_id=update.effective_chat.id, photo=img)
+        img = render_latex(solution)
+        
+        response_2 = '''
+        Incredible, isn't it?
+        '''
 
-    response_2 = '''
-    Incredible, isn't it?
-    '''
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=response_2)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=response_1)
+        await context.bot.send_photo(chat_id=update.effective_chat.id, photo=img)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=response_2)
+    except:
+        response_1 = '''
+        ❗ An error has ocurred. I couldn't process the solution 😟. If you want to try again write /rsolve.
+        '''
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=response_1)
 
     return ConversationHandler.END
 
@@ -201,33 +213,33 @@ async def constellations(update: Update, context: ContextTypes.DEFAULT_TYPE):
     response = '''
     Welcome to constellations menu 🌌🌌💫!
     
-    Please select an option of what you'd like to see👀:
-    
-    1. All stars ✨
-    2. All stars and one constellations ✨🌌
-    3. All stars and constellations 🌟
-    
-    Constellations list🗒️:
-    
-    0. Boyero
-    1. Casiopea
-    2. Cazo
-    3. Cygnet
-    4. Geminis
-    5. Hydra
-    6. OsaMayor
-    7. OsaMenor
-    
-    For instance type: 
-    
-    All stars for fist option.
-    All stars and 0 for second option. (if you want another type the correspondent number)
-    All stars and constellations for third option.
-    
-    FOLLOWING INPUTS ARE NOT ALLOWED ❌❌
-    
-    All stars Boyero
-    All stars 0 1 2 3 
+Please write the option of what you'd like to see👀:
+
+- All stars ✨
+- All stars and {constellation number} ✨🌌
+- All stars and constellations 🌟
+
+Constellations number list🗒️:
+
+0. Boyero
+1. Casiopea
+2. Cazo
+3. Cygnet
+4. Geminis
+5. Hydra
+6. OsaMayor
+7. OsaMenor
+
+For example, type: 
+
+- All stars (for fist option).
+- All stars and 0 (for second option, if you want another type the correspondent number).
+- All stars and constellations (for third option).
+
+FOLLOWING INPUTS ARE NOT ALLOWED ❌:
+
+- All stars Boyero
+- All stars 0 1 2 3 
     '''
     
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
@@ -239,7 +251,7 @@ async def get_input_values(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_input = update.message.text
     
     response = '''
-    Fetching data in database👀👀
+    Fetching data in database 👀
     '''
     
     await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
@@ -277,9 +289,9 @@ async def get_input_values(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else: 
         
         response = '''
-        An error has ocurred😥😥
+        An error has ocurred 😥
         
-        Please check for the input value.
+Please type /constellations if you want to try again.
         '''
         
         await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
