@@ -74,6 +74,6 @@ python main.py
 
 ## Hosted on
 
-<a href="https://www.pythonanywhere.com/">
-    <img src="./misc/img/pythonanywhere_logo.png" alt="pythonanywhere" style="width: 30%; border-radius: 5px;"/>
+<a href="https://azure.microsoft.com/es-es">
+    <img src="./misc/img/azure_logo.png" alt="pythonanywhere" style="width: 30%; border-radius: 5px;"/>
   </a>
